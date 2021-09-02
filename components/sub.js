@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native'
 import Animated, { interpolateColors, useValue } from 'react-native-reanimated';
-import { SLIDE_HEIGHT } from '../Slide'
+//import { SLIDE_HEIGHT } from '../screen/SlideAnimated/Slide'
 
 const styles = StyleSheet.create({
     container: {
@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
         alignItems: "center", justifyContent: 'center',
         padding: 24,
         borderTopLeftRadius: 75,
-        backgroundColor:'white'
+        backgroundColor: 'white'
 
     },
     subTitle: {
