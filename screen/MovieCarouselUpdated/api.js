@@ -1,4 +1,7 @@
-import { API_KEY } from './config';
+const API_KEY = "167b0f1047ab31d9cccc7fbc847e518b";
+
+const URL = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc`;
+
 const genres = {
     12: 'Adventure',
     14: 'Fantasy',
@@ -21,12 +24,16 @@ const genres = {
     10770: 'TV Movie',
 };
 
-const API_URL = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc`;
-const getImagePath = (path) => `https://image.tmdb.org/t/p/w440_and_h660_face${path}`;
-const getBackdropPath = (path) => `https://image.tmdb.org/t/p/w370_and_h556_multi_faces${path}`;
+const URL_IMAGE_POSTER = (path) => {
+    return `https://image.tmdb.org/t/p/w440_and_h660_face${path}`;
+}
 
-export const getMovies = async () => {
-    const { results } = await fetch(API_URL).then((x) => x.json());
+const URL_IMAGE_BACKDROP = (path) => {
+    return `https://image.tmdb.org/t/p/w370_and_h556_multi_faces${path}`;
+}
+
+export const getMovie = async () => {
+    const { results, page } = await fetch(URL).then((movie) => movie.json());
     const movies = results.map(
         ({
             id,
@@ -40,14 +47,14 @@ export const getMovies = async () => {
         }) => ({
             key: id,
             title: original_title,
-            poster: getImagePath(poster_path),
-            backdrop: getBackdropPath(backdrop_path),
+            poster: URL_IMAGE_POSTER(poster_path),
+            backdrop: URL_IMAGE_BACKDROP(backdrop_path),
             rating: vote_average,
             description: overview,
             releaseDate: release_date,
-            genres: genre_ids.map((genre) => genres[genre]),
+            genre: genre_ids.map((item) => genres[item])
+
         })
     );
-
     return movies
 }
