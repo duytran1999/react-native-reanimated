@@ -22,7 +22,6 @@ import { SharedElement } from "react-navigation-shared-element";
 
 import Genres from "./genre";
 import Rating from "./rating";
-import { initialWindowMetrics } from "react-native-safe-area-context";
 
 const SPACING = 5;
 const ITEM_SIZE = width * 0.65;
@@ -89,30 +88,30 @@ const BackDrop = ({ movies, scrollX }) => {
 };
 const ButtonWatchMovie = () => {
   return (
-    <View
+    <SharedElement
+      id={`btnWatchMovie`}
       style={{
         position: "absolute",
         bottom: 10,
+        left: width / 2 - (ITEM_SIZE - 20) / 2,
         zIndex: 9999,
-        alignItems: "center",
-        width: width,
+        width: ITEM_SIZE - 20,
         height: 60,
       }}
     >
-      <TouchableOpacity>
-        <View
-          style={{
-            height: 60,
-            width: ITEM_SIZE - 20,
-            backgroundColor: "black",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text style={{ color: "white", fontWeight: "900" }}>Watch Now</Text>
-        </View>
-      </TouchableOpacity>
-    </View>
+      <TouchableOpacity
+        style={{
+          width: ITEM_SIZE - 20,
+          height: 60,
+          backgroundColor: "black",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      ></TouchableOpacity>
+      <View style={{ position: "absolute", width: ITEM_SIZE - 20, height: 60 ,alignItems:'center',justifyContent:'center'}}>
+        <Text style={{ color: "white", fontWeight: "900" }}>Watch Now</Text>
+      </View>
+    </SharedElement>
   );
 };
 const Carousel = ({ navigation }) => {
@@ -153,7 +152,8 @@ const Carousel = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar hidden />
       <BackDrop movies={movies} scrollX={scrollX} />
-      <ButtonWatchMovie />
+
+      <ButtonWatchMovie item={1} />
       <Animated.FlatList
         style={{}}
         showsHorizontalScrollIndicator={false}

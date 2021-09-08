@@ -1,6 +1,6 @@
 import React from "react";
 //import Slide from "./screen/SlideAnimated/App";
-import {Easing} from 'react-native'
+import { Easing } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import ListMovie from "./screen/MovieCarouselUpdated/index";
@@ -38,11 +38,9 @@ const App = ({ navigation }) => {
                 },
               };
             },
-            
-          })}   
+          })}
           sharedElements={(route) => {
             const { item } = route.params;
-            //console.log(`item.${item.key}.poster`);
             return [
               {
                 id: `item.${item.key}.viewInfo`,
@@ -55,6 +53,9 @@ const App = ({ navigation }) => {
               },
               {
                 id: `item.${item.key}.rating`,
+              },
+              {
+                id: `btnWatchMovie`,
               },
             ];
           }}
