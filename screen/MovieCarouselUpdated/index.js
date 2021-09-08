@@ -10,6 +10,7 @@ import {
   Animated,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Easing,
 } from "react-native";
 import Constants from "expo-constants";
 const { width, height } = Dimensions.get("window");
@@ -117,7 +118,7 @@ const ButtonWatchMovie = () => {
 const Carousel = ({ navigation }) => {
   const [movies, setMovies] = React.useState([]);
   const scrollX = React.useRef(new Animated.Value(0)).current;
-  const scaleItem = React.useRef(new Animated.Value(1)).current;
+
   React.useEffect(() => {
     const fetchData = async () => {
       const movies = await getMovie();
@@ -138,6 +139,7 @@ const Carousel = ({ navigation }) => {
     const index_movie_center = movies.findIndex(
       (movie) => movie.key === item.key
     );
+
     navigation.push("DetailMovie", {
       item,
       itemLeft: index_movie_center === 1 ? 0 : movies[index_movie_center - 1],
@@ -162,7 +164,7 @@ const Carousel = ({ navigation }) => {
           alignItems: "center",
           justifyContent: "flex-end",
           position: "absolute",
-          bottom: 20,
+          bottom: 60,
         }}
         snapToInterval={ITEM_SIZE}
         decelerationRate={"fast"}
@@ -183,7 +185,7 @@ const Carousel = ({ navigation }) => {
           ];
           const translateY = scrollX.interpolate({
             inputRange,
-            outputRange: [0, -50, 0],
+            outputRange: [0, -70, 0],
           });
 
           return (
@@ -194,32 +196,50 @@ const Carousel = ({ navigation }) => {
                     HandleScaleMovie(item, index);
                   }}
                 >
-                  <Animated.View
-                    style={{
-                      marginHorizontal: SPACING,
-                      padding: SPACING * 2,
-                      alignItems: "center",
-                      backgroundColor: "white",
-                      borderRadius: 34,
-                      transform: [{ translateY }],
-                    }}
-                  >
+                  <View style={{ alignItems: "center" }}>
                     <SharedElement
-                      id={`item.${item.key}.poster`}
-                      style={styles.posterImage}
+                      id={`item.${item.key}.viewInfo`}
+                      style={StyleSheet.absoluteFillObject}
+                    >
+                      <Animated.View
+                        style={{
+                          marginHorizontal: SPACING,
+                          padding: SPACING * 2,
+                          alignItems: "center",
+                          backgroundColor: "white",
+                          borderRadius: 34,
+                          height: ITEM_SIZE * 1.2 + 150,
+                          transform: [{ translateY }],
+                        }}
+                      />
+                    </SharedElement>
+                    <Animated.View
+                      style={{
+                        marginTop: SPACING * 2,
+                        width: ITEM_SIZE - SPACING * 6,
+                        transform: [{ translateY }],
+                        alignItems: "center",
+                      }}
                     >
                       <Image
                         source={{ uri: item.poster }}
                         style={styles.posterImage}
                       />
-                    </SharedElement>
 
-                    <Text style={{ fontSize: 24 }} numberOfLines={1}>
-                      {item.title}
-                    </Text>
-                    <Genres genre={item.genre} />
-                    <Rating rating={item.rating} />
-                  </Animated.View>
+                      <SharedElement id={`item.${item.key}.title`}>
+                        <Text style={{ fontSize: 24 }} numberOfLines={1}>
+                          {item.title}
+                        </Text>
+                      </SharedElement>
+
+                      <SharedElement id={`item.${item.key}.genre`}>
+                        <Genres genre={item.genre} />
+                      </SharedElement>
+                      <SharedElement id={`item.${item.key}.rating`}>
+                        <Rating rating={item.rating} />
+                      </SharedElement>
+                    </Animated.View>
+                  </View>
                 </TouchableWithoutFeedback>
               </View>
             </View>

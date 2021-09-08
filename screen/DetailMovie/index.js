@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   StatusBar,
   Text,
@@ -10,8 +10,12 @@ import {
   Animated,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Easing,
+  ScrollView,
 } from "react-native";
 import { SharedElement } from "react-navigation-shared-element";
+import Genres from "../MovieCarouselUpdated/genre";
+import Rating from "../MovieCarouselUpdated/rating";
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,8 +40,27 @@ const View_Item_Right = () => {
 
 const DetailMovie = ({ navigation, route }) => {
   const { item, itemLeft, itemRight } = route.params;
+  const translateY_ImageMain = useRef(new Animated.Value(700)).current;
+  const translateY_ImageLeft = useRef(new Animated.Value(700)).current;
+  const translateY_ImageRight = useRef(new Animated.Value(700)).current;
+
+  const timing = (destination, value, timing) => {
+    return Animated.timing(destination, {
+      toValue: value,
+      duration: timing,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    });
+  };
+  useEffect(() => {
+    const ani1 = timing(translateY_ImageMain, -10, 700);
+    const ani2 = timing(translateY_ImageLeft, 0, 800);
+    const ani3 = timing(translateY_ImageRight, 0, 1000);
+    Animated.parallel([ani1, ani2, ani3]).start();
+  }, []);
+
   return (
-    <View style={{ flex: 1, backgroundColor: "yellow" }}>
+    <View style={{ flex: 1, backgroundColor: "#1e272e" }}>
       {/* HEADER */}
       <View
         style={{ backgroundColor: "#1e272e", height: HEIGHT_VIEW_TOP_CONNER }}
@@ -46,33 +69,33 @@ const DetailMovie = ({ navigation, route }) => {
         {itemLeft === 0 ? (
           <View_Item_Left />
         ) : (
-          <Image
-            style={[styles.imageLeft]}
+          <Animated.Image
+            style={[
+              styles.imageLeft,
+              { transform: [{ translateY: translateY_ImageLeft }] },
+            ]}
             source={{ uri: itemLeft.poster }}
             blurRadius={2}
           />
         )}
         {/* ITEM_CENTER */}
-        <SharedElement
-          id={`item.${item.key}.poster`}
-          style={[styles.imageCenter]}
-        >
-          <Image
-            style={{
-              width: ITEM_MAIN_MOVIE_WIDTH,
-              height: ITEM_MAIN_MOVIE_HEIGHT,
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-            }}
-            source={{ uri: item.poster }}
-          />
-        </SharedElement>
+        <Animated.Image
+          style={[
+            styles.imageCenter,
+            { borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+            { transform: [{ translateY: translateY_ImageMain }] },
+          ]}
+          source={{ uri: item.poster }}
+        />
         {/* ITEM_RIGHT */}
         {itemRight === 0 ? (
           <View_Item_Right />
         ) : (
-          <Image
-            style={styles.imageRight}
+          <Animated.Image
+            style={[
+              styles.imageRight,
+              { transform: [{ translateY: translateY_ImageRight }] },
+            ]}
             source={{ uri: itemRight.poster }}
             blurRadius={2}
           />
@@ -85,15 +108,42 @@ const DetailMovie = ({ navigation, route }) => {
           top: HEIGHT_VIEW_TOP_CONNER - Difference_Height,
         }}
       >
+        <SharedElement id={`item.${item.key}.viewInfo`}>
+          <View
+            style={{
+              backgroundColor: "white",
+              width,
+              height: height - HEIGHT_VIEW_TOP_CONNER + Difference_Height,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }}
+          />
+        </SharedElement>
         <View
           style={{
-            backgroundColor: "white",
+            position: "absolute",
+            height: 100,
             width,
-            height: height - HEIGHT_VIEW_TOP_CONNER + Difference_Height,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
+            padding: 20,
           }}
-        ></View>
+        >
+          <View style={{alignItems:'center'}}>
+            <SharedElement id={`item.${item.key}.title`}>
+              <Text
+                style={{ fontSize: 24, fontWeight: "700" }}
+                numberOfLines={1}
+              >
+                {item.title}
+              </Text>
+            </SharedElement>
+            <SharedElement id={`item.${item.key}.genre`}>
+              <Genres genre={item.genre} />
+            </SharedElement>
+            <SharedElement id={`item.${item.key}.rating`}>
+              <Rating rating={item.rating} />
+            </SharedElement>
+          </View>
+        </View>
       </View>
     </View>
   );

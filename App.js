@@ -45,7 +45,16 @@ const App = ({ navigation }) => {
             //console.log(`item.${item.key}.poster`);
             return [
               {
-                id: `item.${item.key}.poster`,
+                id: `item.${item.key}.viewInfo`,
+              },
+              {
+                id: `item.${item.key}.title`,
+              },
+              {
+                id: `item.${item.key}.genre`,
+              },
+              {
+                id: `item.${item.key}.rating`,
               },
             ];
           }}
